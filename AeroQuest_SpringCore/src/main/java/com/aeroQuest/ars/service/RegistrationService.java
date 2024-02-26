@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aeroQuest.ars.entity.UserEntity;
 import com.aeroQuest.ars.exception.AeroQuestBootException;
 import com.aeroQuest.ars.exception.InvalidCityException;
 import com.aeroQuest.ars.exception.InvalidEmailException;
@@ -13,6 +14,7 @@ import com.aeroQuest.ars.exception.InvalidNameException;
 import com.aeroQuest.ars.exception.InvalidPasswordException;
 import com.aeroQuest.ars.exception.InvalidPhoneException;
 import com.aeroQuest.ars.exception.InvalidUserIdException;
+import com.aeroQuest.ars.exception.UserIdAlreadyPresentException;
 import com.aeroQuest.ars.model.User;
 import com.aeroQuest.ars.repository.UserRepository;
 
@@ -25,10 +27,19 @@ public class RegistrationService {
 	String regex1 = "^[a-zA-Z0-9]{4,15}+$";
 	
 	public String registerUser(User user) throws AeroQuestBootException {
-		String registrationMessage = null;
 		validateUser(user);
-		registrationMessage = userRepository.registerUser();
-		return registrationMessage;
+		boolean b = userRepository.existsById(user.getUserId());
+		if(b)
+			throw new UserIdAlreadyPresentException("RegistrationService.USERID_PRESENT");
+			UserEntity userEntity = new UserEntity();
+			userEntity.setCity(user.getCity());
+			userEntity.setEmail(user.getEmail());
+			userEntity.setName(user.getPassword());
+			userEntity.setPassword(user.getPassword());
+			userEntity.setPhone(user.getPhone());
+			userEntity.setUserId(user.getUserId());
+			userRepository.saveAndFlush(userEntity);
+			return "UserRespository.REGISTRATION_SUCCESS";
 	}
 	
 	public void validateUser(User user) throws AeroQuestBootException {

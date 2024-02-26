@@ -1,6 +1,7 @@
 package com.aeroQuest.ars.model;
 
-public class User {
+public class User{
+	
 	private String userId;
 	private String password;
 	private String name;

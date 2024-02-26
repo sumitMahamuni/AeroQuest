@@ -1,12 +1,8 @@
 package com.aeroQuest.ars.repository;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.aeroQuest.ars.entity.UserEntity;
 
-@Component
-public class UserRepository {
-	private String successMessage = "UserRespository.REGISTRATION_SUCCESS";
-	
-	public String registerUser() {
-		return successMessage;
-	}
+public interface UserRepository extends JpaRepository<UserEntity, String> {
+
 }
