@@ -2,6 +2,8 @@ package com.aeroQuest.ars.controller;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,7 @@ public class RegistrationController {
 	@PostMapping(value = "registerUser")
 	public ModelAndView addCustomer(@Valid @ModelAttribute("command") User user, 
 			BindingResult result, ModelMap model) {
+		final Logger logger;
 		ModelAndView modelAndView = new ModelAndView();
 		if(result.hasErrors()) {
 			modelAndView = new ModelAndView(register, command, user);
@@ -48,11 +51,13 @@ public class RegistrationController {
 						"RegistrationController.SUCCESSFUL_REGISTRATION"));
 			}
 			catch(AeroQuestBootException e) {
+				logger = LoggerFactory.getLogger(this.getClass());
 				if(e.getMessage().contains("RegistrationService")) {
 					modelAndView = new ModelAndView(register);
 					modelAndView.addObject(command, user);
 					modelAndView.addObject("message", environment.getProperty(e.getMessage()));
 				}
+				logger.error(e.getMessage(), e);
 			}
 		}
 		
